@@ -202,13 +202,20 @@ char Adafruit_GPS::read(void) {
 
 // Constructor when using SoftwareSerial or NewSoftSerial
 #if ARDUINO >= 100
-Adafruit_GPS::Adafruit_GPS(SoftwareSerial *ser)
+Adafruit_GPS::Adafruit_GPS(Stream *ser)
 #else
   Adafruit_GPS::Adafruit_GPS(NewSoftSerial *ser) 
 #endif
 {
   common_init();  // Set everything to common state, then...
   gpsSwSerial = ser; // ...override swSerial with value passed.
+}
+
+
+
+// Initialization code used by all constructor types
+void Adafruit_GPS::common_init(void) {
+  gpsSwSerial  = NULL;
 
   recvdflag = false;
   paused = false;
@@ -222,18 +229,6 @@ Adafruit_GPS::Adafruit_GPS(SoftwareSerial *ser)
   lat = lon = mag = 0;
   fix = false;
   fixquality = satellites = 0;
-}
-
-
-void Adafruit_GPS::begin(uint16_t baud) 
-{
-  gpsSwSerial->begin(baud);
-}
-
-// Initialization code used by all constructor types
-void Adafruit_GPS::common_init(void) {
-  gpsSwSerial  = NULL;
-  gpsHwSerial  = NULL;
 }
 
 

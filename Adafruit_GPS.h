@@ -58,14 +58,12 @@ All text above must be included in any redistribution
 
 class Adafruit_GPS {
  public:
-  void begin(uint16_t baud); 
 
 #if ARDUINO >= 100
-  Adafruit_GPS(SoftwareSerial *ser); // Constructor when using SoftwareSerial
+  Adafruit_GPS(Stream *ser); // Constructor when using SoftwareSerial
 #else
   Adafruit_GPS(NewSoftSerial  *ser); // Constructor when using NewSoftSerial
 #endif
-  Adafruit_GPS(HardwareSerial *ser); // Constructor when using HardwareSerial
 
   char *lastNMEA(void);
   boolean newNMEAreceived();
@@ -99,11 +97,10 @@ class Adafruit_GPS {
   
   uint8_t parseResponse(char *response);
 #if ARDUINO >= 100
-  SoftwareSerial *gpsSwSerial;
+  Stream *gpsSwSerial;
 #else
   NewSoftSerial  *gpsSwSerial;
 #endif
-  HardwareSerial *gpsHwSerial;
 };
 
 
