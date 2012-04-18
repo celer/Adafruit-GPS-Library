@@ -28,14 +28,15 @@ volatile boolean recvdflag;
 
 boolean Adafruit_GPS::parse(char *nmea) {
   // do checksum check
+  uint8_t nmeaLen = strlen(nmea);
 
   // first look if we even have one
-  if (nmea[strlen(nmea)-4] == '*') {
-    uint16_t sum = parseHex(nmea[strlen(nmea)-3]) * 16;
-    sum += parseHex(nmea[strlen(nmea)-2]);
+  if (nmea[nmeaLen-4] == '*') {
+    uint16_t sum = parseHex(nmea[nmeaLen-3]) * 16;
+    sum += parseHex(nmea[nmeaLen-2]);
     
     // check checksum 
-    for (uint8_t i=1; i < (strlen(nmea)-4); i++) {
+    for (uint8_t i=1; i < (nmeaLen-4); i++) {
       sum ^= nmea[i];
     }
     if (sum != 0) {
@@ -45,7 +46,7 @@ boolean Adafruit_GPS::parse(char *nmea) {
   }
 
   // look for a few common sentences
-  if (strstr(nmea, "$GPGGA")) {
+  if (strncmp(nmea, "$GPGGA",6)==0) {
     // found GGA
     char *p = nmea;
     // get time
@@ -93,8 +94,7 @@ boolean Adafruit_GPS::parse(char *nmea) {
     p = strchr(p, ',')+1;
     geoidheight = atof(p);
     return true;
-  }
-  if (strstr(nmea, "$GPRMC")) {
+  } else if (strncmp(nmea, "$GPRMC",6)==0) {
    // found RMC
     char *p = nmea;
 
@@ -158,6 +158,7 @@ boolean Adafruit_GPS::parse(char *nmea) {
   return false;
 }
 
+
 char Adafruit_GPS::read(void) {
   char c = 0;
   
@@ -173,8 +174,7 @@ char Adafruit_GPS::read(void) {
     if (c == '$') {
       currentline[lineidx] = 0;
       lineidx = 0;
-    }
-    if (c == '\n') {
+    } else if (c == '\n') {
       currentline[lineidx] = 0;
 
       if (currentline == line1) {
