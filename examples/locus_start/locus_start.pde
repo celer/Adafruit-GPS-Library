@@ -44,7 +44,7 @@ void setup()
   Serial.println("Adafruit GPS logging start test!");
 
   // 9600 NMEA is the default baud rate for MTK - some use 4800
-  GPS.begin(9600);
+  mySerial.begin(9600);
   
   // You can adjust which sentences to have the module emit, below
   // Default is RMC + GGA
